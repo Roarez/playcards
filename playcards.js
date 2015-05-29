@@ -214,21 +214,19 @@ function isStraightFlush(hand) {
 }
 
 function sortHelp(arr) {
-    var arr2 = [];
+    var map = {
+        'A': 14, 'K': 13, 'Q': 12,
+        'J': 11, '0': 10, '9': 9,
+        '8': 8,  '7': 7,  '6': 6,
+        '5': 5,  '4': 4,  '3': 3,
+        '2': 2
+    }
+    var arr2 = arr.map(function(val) {
+        return map[val];
+    });
     for(var i = 0; i < arr.length; i++) {
-        if(arr[i] === 'A') {arr2.push(14); arr2.push(1);} // what to do in case of A being 1?
-        if(arr[i] === 'K') {arr2.push(13);}
-        if(arr[i] === 'Q') {arr2.push(12);}
-        if(arr[i] === 'J') {arr2.push(11);}
-        if(arr[i] === '0') {arr2.push(10);}
-        if(arr[i] === '9') {arr2.push(9);}
-        if(arr[i] === '8') {arr2.push(8);}
-        if(arr[i] === '7') {arr2.push(7);}
-        if(arr[i] === '6') {arr2.push(6);}
-        if(arr[i] === '5') {arr2.push(5);}
-        if(arr[i] === '4') {arr2.push(4);}
-        if(arr[i] === '3') {arr2.push(3);}
-        if(arr[i] === '2') {arr2.push(2);}
+        if(arr[i] === 'A') 
+            arr2.push(1); // what to do in case of A being 1?
     }
     arr2.sort(function(a,b){return b - a});
     return arr2;
@@ -282,7 +280,7 @@ function playPoker() {
                     draw(newDeck, 5, hand, function(err, aiHand) {
                         console.log('Your hand: ', pHand);
                         console.log('AI hand: ', aiHand);
-                        var pRating = rateHand(pHand);
+                        var pRating = rateHand(['pHand']);
                         var aiRating = rateHand(aiHand);
                         console.log('You got a', pRating.name);
                         console.log('AI got a', aiRating.name);
