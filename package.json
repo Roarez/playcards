@@ -1,0 +1,23 @@
+{
+  "name": "playcards",
+  "version": "1.0.0",
+  "description": "",
+  "main": "playcards.js",
+  "dependencies": {
+    "request": "^2.55.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Roarez/playcards.git"
+  },
+  "author": "Roarez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Roarez/playcards/issues"
+  },
+  "homepage": "https://github.com/Roarez/playcards"
+}
