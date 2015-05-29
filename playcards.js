@@ -282,7 +282,7 @@ function playPoker() {
                     draw(newDeck, 5, hand, function(err, aiHand) {
                         console.log('Your hand: ', pHand);
                         console.log('AI hand: ', aiHand);
-                        var pRating = rateHand(['AS','0S','QS','KS','JS']);
+                        var pRating = rateHand(pHand);
                         var aiRating = rateHand(aiHand);
                         console.log('You got a', pRating.name);
                         console.log('AI got a', aiRating.name);
