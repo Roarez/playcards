@@ -266,82 +266,99 @@ function highCard(hand) {
     return sorted[0]; //first entry = highest value
 }
 
+var yourHand, nDiscarded;
+
 function playPoker() {
-    newGame(function(error) {
-        if (error) throw error;
-        draw(newDeck, 5, [], function(err, pHand) {
-            var hand = pHand;
-            console.log(hand);
-            rl.question("What cards do you wish to discard? (leave empty for none) ", function(answer) {
-                if(answer.length === 0) {
-                    hand = [];
-                    draw(newDeck, 5, hand, function(err, aiHand) {
-                        console.log('Your hand: ', pHand);
-                        console.log('AI hand: ', aiHand);
-                        var pRating = rateHand(['pHand']);
-                        var aiRating = rateHand(aiHand);
-                        console.log('You got a', pRating.name);
-                        console.log('AI got a', aiRating.name);
-                        if(pRating.rate > aiRating.rate) {
-                            console.log('You Won!');
-                        }
-                        else if(pRating.rate < aiRating.rate) {
-                            console.log('You Lost');
-                        }
-                        else {
-                            var pHigh = highCard(pHand);
-                            var aiHigh = highCard(aiHand);
-                            if(pHigh > aiHigh)
-                                console.log('You Won!');
-                            else if(pHigh < aiHigh)
-                                console.log('You Lost');
-                            else
-                                console.log('Its a Draw');
-                        }
-                        //rate hands & decide winner
-                    }); //competing AI hand (random for now)
-                }
-                else {
-                    var disCards = answer.split(' ');
-                    console.log(disCards);
-                    discard(newDeck, 'discardedCards', disCards, hand, function(error, dcHand) {
-                        draw(newDeck, disCards.length, dcHand, function(err, npHand) {
-                            hand = [];
-                            draw(newDeck, 5, hand, function(err, aiHand) {
-                                console.log('Your hand: ', npHand);
-                                console.log('AI hand: ', aiHand);
-                                var pRating = rateHand(npHand);
-                                var aiRating = rateHand(aiHand);
-                                console.log('You got a ', pRating.name);
-                                console.log('AI got a ', aiRating.name);
-                                if(pRating.rate > aiRating.rate) {
-                                    console.log('You Won!');
-                                }
-                                else if(pRating.rate < aiRating.rate) {
-                                    console.log('You Lost');
-                                }
-                                else {
-                                    var pHigh = highCard(npHand);
-                                    var aiHigh = highCard(aiHand);
-                                    if(pHigh > aiHigh)
-                                        console.log('You Won!');
-                                    else if(pHigh < aiHigh)
-                                        console.log('You Lost');
-                                    else
-                                        console.log('Its a Draw');
-                                }
+    newGame(gameStart);
+}
 
-                                //rate hands & decide winner
-                            }); //competing AI hand (random for now)
-                        }); // draw equal number of discarded cards
-                    });
-                }
-                // make hand rating system, rate both player and AI hands and return winner
+function gameStart(error) {
+    if (error) throw error;
+    draw(newDeck, 5, [], initpHand);
+}
 
-                rl.close();
-            }); //five card draw poker
-        });
-    });
+function initpHand(err, pHand) {
+    var hand = pHand;
+    yourHand = pHand;
+    console.log(hand);
+    rl.question("What cards do you wish to discard? (leave empty for none) ", inquire); //five card draw poker
+}
+
+function inquire(answer) {
+    if(answer.length === 0) {
+        hand = [];
+        draw(newDeck, 5, hand, initAiHand1); //competing AI hand (random for now)
+    }
+    else {
+        var disCards = answer.split(' ');
+        console.log(disCards);
+        nDiscarded = disCards.length;
+        discard(newDeck, 'discardedCards', disCards, yourHand, removepCards);
+    }
+    // make hand rating system, rate both player and AI hands and return winner
+    rl.close();
+}
+
+function initAiHand1(err, aiHand) {
+    console.log('Your hand: ', yourHand);
+    console.log('AI hand: ', aiHand);
+    var pRating = rateHand(yourHand);
+    var aiRating = rateHand(aiHand);
+    console.log('You got a', pRating.name);
+    console.log('AI got a', aiRating.name);
+    if(pRating.rate > aiRating.rate) {
+        console.log('You Won!');
+    }
+    else if(pRating.rate < aiRating.rate) {
+        console.log('You Lost');
+    }
+    else {
+        var pHigh = highCard(pHand);
+        var aiHigh = highCard(aiHand);
+        if(pHigh > aiHigh)
+            console.log('You Won!');
+        else if(pHigh < aiHigh)
+            console.log('You Lost');
+        else
+            console.log('Its a Draw');
+    }
+    //rate hands & decide winner
+}
+
+function removepCards(error, dcHand) {
+    draw(newDeck, nDiscarded, dcHand, drawMissingCards); // draw equal number of discarded cards
+}
+
+function drawMissingCards(err, npHand) {
+    hand = [];
+    yourHand = npHand;
+    draw(newDeck, 5, hand, initAiHand2); //competing AI hand (random for now)
+}
+
+function initAiHand2(err, aiHand) {
+    console.log('Your hand: ', yourHand);
+    console.log('AI hand: ', aiHand);
+    var pRating = rateHand(yourHand);
+    var aiRating = rateHand(aiHand);
+    console.log('You got a ', pRating.name);
+    console.log('AI got a ', aiRating.name);
+    if(pRating.rate > aiRating.rate) {
+        console.log('You Won!');
+    }
+    else if(pRating.rate < aiRating.rate) {
+        console.log('You Lost');
+    }
+    else {
+        var pHigh = highCard(yourHand);
+        var aiHigh = highCard(aiHand);
+        if(pHigh > aiHigh)
+            console.log('You Won!');
+        else if(pHigh < aiHigh)
+            console.log('You Lost');
+    else
+        console.log('Its a Draw');
+    }
+    //rate hands & decide winner
 }
 
 playPoker();
