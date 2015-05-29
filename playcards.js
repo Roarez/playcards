@@ -6,16 +6,17 @@ var rl = readline.createInterface({
   output: process.stdout
 });
 
-var options = {
-    url: 'http://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1',
+var baseUrl = 'http://deckofcardsapi.com/api/deck';
+
+var baseReq = request.defaults({
+    baseUrl: baseUrl,
     method: 'get'
-}
+});
 
 var newDeck;
 
 function newGame(callback) {
-    options.url = 'http://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1',
-    request(options, function(error, response, body) {
+    baseReq({url: '/new/shuffle/?deck_count=1'} ,function(error, response, body) {
         if (error) callback(error);
         if (!error && response.statusCode == 200) {
             var info = JSON.parse(body);
@@ -27,8 +28,7 @@ function newGame(callback) {
 }
 
 function draw(deck, nCards, chand, callback) {
-    options.url = 'http://deckofcardsapi.com/api/deck/'+deck+'/draw/?count='+nCards;
-    request(options, function(error, response, body) {
+    baseReq({url: '/'+deck+'/draw/?count='+nCards}, function(error, response, body) {
         if (error) callback(error);
         if (!error && response.statusCode == 200) {
             var info = JSON.parse(body);
@@ -54,8 +54,7 @@ function discard(deck, pile, cards, cohand, callback) {
         else
             concatCards += cards[i];
     }
-    options.url = 'http://deckofcardsapi.com/api/deck/'+deck+'/pile/'+pile+'/add/?cards='+concatCards;
-    request(options, function(error, response, body) {
+    baseReq({url: '/'+deck+'/pile/'+pile+'/add/?cards='+concatCards}, function(error, response, body) {
         if (error) callback(error);
         if (!error && response.statusCode == 200) {
             var info = JSON.parse(body);
@@ -75,8 +74,7 @@ function customDeck(cards, callback) {
         else
             concatCards += cards[i];
     }
-    options.url = 'http://deckofcardsapi.com/api/deck/shuffle/?cards='+concatCards;
-    request(options, function(error, response, body) {
+    baseReq({url: '/shuffle/?cards='+concatCards}, function(error, response, body) {
         if (error) callback(error);
         if (!error && response.statusCode == 200) {
             var info = JSON.parse(body);
